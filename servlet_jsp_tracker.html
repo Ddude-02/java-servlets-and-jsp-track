@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Servlet &amp; JSP Learning Tracker</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --surface: #f7f7f7;
+      --text: #202124;
+      --muted: #62666b;
+      --border: #d9dce1;
+      --accent: #2457c5;
+      --done: #e8f3e9;
+    }
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #17191c;
+      --surface: #22252a;
+      --text: #e8eaed;
+      --muted: #aeb4bd;
+      --border: #3b4048;
+      --accent: #8ab4f8;
+      --done: #24372a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 28px 18px;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px/1.5 Arial, Helvetica, sans-serif;
+    }
+    main { max-width: 1100px; margin: 0 auto; }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    h1 { font-size: 25px; margin: 0 0 5px; }
+    .subtitle { color: var(--muted); margin: 0; }
+    button {
+      padding: 9px 13px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+    }
+    button:hover { border-color: var(--accent); }
+    .summary {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 13px 15px;
+      margin-bottom: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .summary strong { font-variant-numeric: tabular-nums; }
+    progress { width: min(280px, 100%); height: 10px; accent-color: var(--accent); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    th, td {
+      padding: 11px 12px;
+      text-align: left;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--border);
+    }
+    th { background: var(--surface); font-weight: 600; }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr.completed { background: var(--done); }
+    td:first-child { width: 55px; color: var(--muted); }
+    td:nth-child(3) { min-width: 170px; }
+    td:nth-child(4) { white-space: nowrap; }
+    td:last-child { min-width: 130px; }
+    .status { color: var(--muted); font-size: 13px; }
+    .check-cell { text-align: center; width: 70px; }
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .completed .topic { text-decoration: line-through; text-decoration-thickness: 1px; }
+    footer { margin-top: 15px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 600px) {
+      body { padding: 20px 10px; }
+      h1 { font-size: 21px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Servlet &amp; JSP Learning Tracker</h1>
+      <p class="subtitle">Tick each topic when you complete it. Your progress is saved in this browser.</p>
+    </div>
+    <button id="themeToggle" type="button" aria-label="Toggle light and dark mode">Switch to dark mode</button>
+  </header>
+
+  <section class="summary" aria-live="polite">
+    <strong id="progressText">0 of 27 completed (0%)</strong>
+    <progress id="progressBar" value="0" max="27"></progress>
+    <button id="resetButton" type="button">Reset progress</button>
+  </section>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Topic</th>
+          <th>Channel</th>
+          <th>Video No.</th>
+          <th>Decision</th>
+          <th class="check-cell">Done</th>
+        </tr>
+      </thead>
+      <tbody id="topicRows">
+        <tr data-id="1"><td>1</td><td class="topic">Introduction to Servlets</td><td>Playlist 1</td><td>#1</td><td>Watch</td></tr>
+        <tr data-id="2"><td>2</td><td class="topic">Eclipse and Tomcat Setup</td><td>Playlist 1</td><td>#2</td><td>Watch</td></tr>
+        <tr data-id="3"><td>3</td><td class="topic">First Servlet Program</td><td>Playlist 1</td><td>#3</td><td>Watch</td></tr>
+        <tr data-id="4"><td>4</td><td class="topic">Servlet Lifecycle</td><td>Playlist 1</td><td>#4</td><td>Watch</td></tr>
+        <tr data-id="5"><td>5</td><td class="topic">Deployment Descriptor – web.xml</td><td>Playlist 1</td><td>#5</td><td>Skim</td></tr>
+        <tr data-id="6"><td>6</td><td class="topic">Servlet Annotations</td><td>Playlist 1</td><td>#6</td><td>Watch</td></tr>
+        <tr data-id="7"><td>7</td><td class="topic">ServletConfig vs ServletContext</td><td>Additional</td><td>—</td><td>Learn basics</td></tr>
+        <tr data-id="8"><td>8</td><td class="topic">HttpServletRequest and HttpServletResponse</td><td>Playlist 1</td><td>#7</td><td>Watch</td></tr>
+        <tr data-id="9"><td>9</td><td class="topic">GET and POST</td><td>Playlist 1</td><td>#8</td><td>Watch</td></tr>
+        <tr data-id="10"><td>10</td><td class="topic">Redirect and RequestDispatcher</td><td>Playlist 1</td><td>#9</td><td>Watch</td></tr>
+        <tr data-id="11"><td>11</td><td class="topic">Cookies</td><td>LCWD</td><td>#16, #17</td><td>Watch</td></tr>
+        <tr data-id="12"><td>12</td><td class="topic">HttpSession</td><td>Playlist 1</td><td>#10</td><td>Watch</td></tr>
+        <tr data-id="13"><td>13</td><td class="topic">Session Timeout</td><td>Additional</td><td>—</td><td>Learn basics</td></tr>
+        <tr data-id="14"><td>14</td><td class="topic">Servlet Filters</td><td>LCWD</td><td>#38–40</td><td>Watch</td></tr>
+        <tr data-id="15"><td>15</td><td class="topic">Introduction to JSP</td><td>Playlist 1</td><td>#11</td><td>Watch</td></tr>
+        <tr data-id="16"><td>16</td><td class="topic">JSP Lifecycle</td><td>Playlist 1</td><td>#12</td><td>Skim</td></tr>
+        <tr data-id="17"><td>17</td><td class="topic">JSP Tags Overview</td><td>Playlist 1</td><td>#13</td><td>Skim</td></tr>
+        <tr data-id="18"><td>18</td><td class="topic">JSP Scripting Elements</td><td>Playlist 1</td><td>#14</td><td>Skip</td></tr>
+        <tr data-id="19"><td>19</td><td class="topic">JSP Implicit Objects</td><td>Playlist 1</td><td>#15</td><td>Watch</td></tr>
+        <tr data-id="20"><td>20</td><td class="topic">JSP Scopes</td><td>Additional</td><td>—</td><td>Learn basics</td></tr>
+        <tr data-id="21"><td>21</td><td class="topic">Expression Language (EL)</td><td>Playlist 1</td><td>#16</td><td>Watch</td></tr>
+        <tr data-id="22"><td>22</td><td class="topic">JSTL</td><td>LCWD</td><td>#41, #42</td><td>Learn basics</td></tr>
+        <tr data-id="23"><td>23</td><td class="topic">MVC Architecture</td><td>Additional</td><td>—</td><td>Learn basics</td></tr>
+        <tr data-id="24"><td>24</td><td class="topic">DAO Pattern</td><td>Additional</td><td>—</td><td>Learn basics</td></tr>
+        <tr data-id="25"><td>25</td><td class="topic">PreparedStatement</td><td>Already covered in JDBC</td><td>—</td><td>Completed</td></tr>
+        <tr data-id="26"><td>26</td><td class="topic">Registration using JSP + Servlet + JDBC</td><td>Playlist 1</td><td>#17</td><td>Watch</td></tr>
+        <tr data-id="27"><td>27</td><td class="topic">Login using Servlet + JSP + JDBC</td><td>Playlist 1</td><td>#18</td><td>Watch</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <footer>Progress is stored using this browser's local storage. It remains after refreshing or reopening this page in the same browser. Clearing browser site data or using another browser/device may reset it.</footer>
+</main>
+
+<script>
+(() => {
+  const STORAGE_KEY = "servlet-jsp-tracker-progress-v1";
+  const THEME_KEY = "servlet-jsp-tracker-theme-v1";
+  const rows = [...document.querySelectorAll("#topicRows tr")];
+  const progressText = document.getElementById("progressText");
+  const progressBar = document.getElementById("progressBar");
+  const themeToggle = document.getElementById("themeToggle");
+
+  function getSavedProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
+    catch { return {}; }
+  }
+
+  function saveProgress() {
+    const progress = {};
+    rows.forEach(row => {
+      progress[row.dataset.id] = row.querySelector('input[type="checkbox"]').checked;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  }
+
+  function updateSummary() {
+    const completed = rows.filter(row => row.querySelector('input[type="checkbox"]').checked).length;
+    const total = rows.length;
+    const percent = Math.round((completed / total) * 100);
+    progressText.textContent = `${completed} of ${total} completed (${percent}%)`;
+    progressBar.max = total;
+    progressBar.value = completed;
+  }
+
+  const saved = getSavedProgress();
+  rows.forEach(row => {
+    const id = row.dataset.id;
+    const cell = document.createElement("td");
+    cell.className = "check-cell";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.setAttribute("aria-label", `Mark ${row.querySelector(".topic").textContent} as completed`);
+    // PreparedStatement was already covered, so it starts checked.
+    checkbox.checked = id === "25" ? true : Boolean(saved[id]);
+    cell.appendChild(checkbox);
+    row.appendChild(cell);
+    row.classList.toggle("completed", checkbox.checked);
+    checkbox.addEventListener("change", () => {
+      row.classList.toggle("completed", checkbox.checked);
+      saveProgress();
+      updateSummary();
+    });
+  });
+
+  // Save the pre-completed JDBC topic as part of the initial progress.
+  saveProgress();
+  updateSummary();
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    themeToggle.textContent = theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+    localStorage.setItem(THEME_KEY, theme);
+  }
+
+  applyTheme(localStorage.getItem(THEME_KEY) || "light");
+  themeToggle.addEventListener("click", () => {
+    applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+  });
+
+  document.getElementById("resetButton").addEventListener("click", () => {
+    if (!confirm("Reset all progress? The already-covered PreparedStatement topic will remain completed.")) return;
+    rows.forEach(row => {
+      const checkbox = row.querySelector('input[type="checkbox"]');
+      checkbox.checked = row.dataset.id === "25";
+      row.classList.toggle("completed", checkbox.checked);
+    });
+    saveProgress();
+    updateSummary();
+  });
+})();
+</script>
+</body>
+</html>
